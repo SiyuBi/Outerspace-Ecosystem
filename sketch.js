@@ -29,41 +29,8 @@ class SolarSystem{
     //list of asteroids
     this.asteroids = [];
   }
-}
 
-class Planet{
-  constructor(x,y,appearance,mass,SolarSystem){
-    //let player choose or customize appearance
-    this.appearance = this.setAppearance();
-    //positions of this planet in solar system
-    this.x = x;
-    this.y = y;
-    //this.distToStars = dist(SolarSystem.massCenter.x,SolarSystem.massCenter.y,this.x,this.y);
-    //list of moons
-    this.moons = [];
-    //mass for calculating gravity
-    this.mass = mass;
-    SolarSystem.planets.push(this);
-  }
-
-  setAppearance(){
-
-  }
-}
-
-class Moon{
-  constructor(x,y,appearance,mass,Planet){
-    //let player choose or customize appearance
-    this.appearance = this.setAppearance();
-    this.x = x;
-    this.y = y;
-    this.distToPlanet = dist(Planet.x,Planet.y,this.x,this.y);
-    //mass for calculating gravity
-    this.mass = mass;
-    Planet.moons.push(this);
-  }
-
-  setAppearance(){
+  display(){
 
   }
 }
@@ -85,6 +52,52 @@ class Star{
   }
 }
 
+class Planet{
+  constructor(x,y,appearance,mass,SolarSystem){
+    //let player choose or customize appearance
+    this.appearance = this.setAppearance();
+    //positions of this planet in solar system
+    this.x = x;
+    this.y = y;
+    //this.distToStars = dist(SolarSystem.massCenter.x,SolarSystem.massCenter.y,this.x,this.y);
+    //list of moons
+    this.moons = [];
+    //mass for calculating gravity
+    this.mass = mass;
+    SolarSystem.planets.push(this);
+  }
+
+  setAppearance(){
+
+  }
+
+  move(){
+
+  }
+}
+
+class Moon{
+  constructor(x,y,appearance,mass,Planet){
+    //let player choose or customize appearance
+    this.appearance = this.setAppearance();
+    this.planet = Planet;
+    this.x = x;
+    this.y = y;
+    this.distToPlanet = dist(Planet.x,Planet.y,this.x,this.y);
+    //mass for calculating gravity
+    this.mass = mass;
+    Planet.moons.push(this);
+  }
+
+  setAppearance(){
+
+  }
+
+  move(){
+
+  }
+}
+
 class Asteroid{
   constructor(x,y,appearance,mass,SolarSystem){
     //let player choose or customize appearance
@@ -99,6 +112,10 @@ class Asteroid{
   }
 
   setAppearance(){
+
+  }
+
+  move(){
 
   }
 }
