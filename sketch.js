@@ -4,8 +4,9 @@ function preload() {
 }
 
 function setup() {
-  let cnv = createCanvas(500, 500);
-  cnv.id('p5canvas');
+  let canvas = createCanvas(500, 500);
+  canvas.id('p5canvas');
+  canvas.parent("#canvasContainer");
   noStroke();
   textAlign(CENTER, CENTER);
   imageMode(CENTER);
