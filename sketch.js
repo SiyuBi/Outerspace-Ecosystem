@@ -47,20 +47,21 @@ function setup() {
     }*/
 
 
-      str=new Star(250,createVector(200,300),createVector(0,0));
-      theta=random(TWO_PI);
-      r = random(str.r,min(width/2,height/2));
+      str=new Star(250,200,300,0);
+      //theta=random(TWO_PI);
+      //r = random(str.r,min(width/2,height/2));
 
 
-      planetPos=createVector(abs(r*cos(theta)),abs(r*sin(theta)));
-      planet=new Planet(100,planetPos,createVector(0,0));
-      theta2=random(TWO_PI);
-      r2=random(planet.r,min(width/2,height/2));
-      moonPos=createVector(abs(r2*cos(theta2),r2*sin(theta2)));
-      moon = new Moon(20,moonPos,createVector(0,0))
+      //planetPos=createVector(abs(r*cos(theta)),abs(r*sin(theta)));
+      planet=new Planet(100,200,200,0.01);
+      //theta2=random(TWO_PI);
+      //r2=random(planet.r,min(width/2,height/2));
+      //moonPos=createVector(30,30);
+      moon = new Moon(20,150,150,0.01)
 
 
-      console.log(planetPos);
+ //moonPos=createVector(abs(r2*cos(theta2),r2*sin(theta2)));
+     
 
 
 }
@@ -88,9 +89,7 @@ function draw() {
 
    }*/
 
-   str.setAppearance();
-   str.move();
-   str.detect_click();
+ 
 
    }
 
@@ -102,10 +101,12 @@ function draw() {
       solar_system.display();
       str.setAppearance();
       planet.setAppearance();
+      planet.move();
       moon.setAppearance();
+      moon.move();
 
     
-      console.log(moon.pos.x,moon.pos.y);
+      //console.log(moon.pos.x,moon.pos.y);
 
 
 
@@ -131,6 +132,8 @@ class Enviroment{//where solar systems live
 
     this.stars=[];
 
+    //env.solar_system.push(this);
+
 
   }
 
@@ -152,11 +155,15 @@ class Enviroment{//where solar systems live
 
     }
 
+   str.setAppearance();
+   str.move();
+   str.detect_click();
+
+
+
+
 
     }
-
-
-
 
 }
 
@@ -188,18 +195,18 @@ class SolarSystem{
 
 class Star{
   //x,y,appearance,mass,SolarSystem
-  constructor(mass, pos, vel){
+  constructor(mass, x,y, vel){
     //let player choose or customize appearance
    // this.appearance = this.setAppearance();
     this.star_type=int(random(0,3));
     //positions of this star in solar system (maybe fix at center?)
-    //this.x = random(-500);
-    //this.y = random(50,500);
-    this.pos=pos;
+    this.x = x;
+    this.y = y;
     this.vel=vel;
+    this.theta=0;
     //mass for calculating gravity
     this.mass = mass;
-    this.pos.speed=random(2,5);
+    this.speed=random(2,5);
     this.r=this.mass;
     this.d;
     this.noiseLocation=random(0,1000);
@@ -216,35 +223,35 @@ class Star{
    
 
     if(this.star_type==0){
-      image(star1,this.pos.x,this.pos.y,this.r,this.r);
+      image(star2,this.x,this.y,this.r,this.r);
       
 
     }
 
     else if(this.star_type==1){
 
-      image(star2,this.pos.x,this.pos.y,this.r,this.r);
+      image(star2,this.x,this.y,this.r,this.r);
 
 
     }
 
     else if(this.star_type==2){
 
-      image(star3,this.pos.x,this.pos.y,this.r,this.r);
+      image(star3,this.x,this.y,this.r,this.r);
 
     }
 
 
     if(this.x>width){
-      this.pos.x = random(-1000);
-      this.pos.y = random(20,500);
+      this.x = random(-1000);
+      this.y = random(20,500);
       this.speed=random(2,5);
       this.star_type=int(random(0,3));
     }
 
     if(solar_s==true){
-      this.pos.x=400;
-      this.pos.y=400;
+      this.x=400;
+      this.y=400;
     }
 
 
@@ -254,12 +261,14 @@ class Star{
 
   move(){
 
-    this.pos.x+=this.pos.speed;
+    this.x+=this.speed;
 
     let moveAmount= map( noise(this.noiseLocation), 0,1,-1,1);
-    this.pos.y+=moveAmount;
+    this.y+=moveAmount;
     this.noiseLocation+=0.02;
-    this.pos.y=constrain(this.pos.y,50,800);
+    this.y=constrain(this.y,50,800);
+
+
 
 
   }
@@ -267,13 +276,13 @@ class Star{
 
   detect_click(){
 
-    this.d=dist(mouseX, mouseY, this.pos.x,this.pos.y);
+    this.d=dist(mouseX, mouseY, this.x,this.y);
 
 
     //this.d = dist(mouseX, mouseY, this.x,this.y);
 if(click==true){
 
-   console.log(this.d);
+   
 
 
     if(this.d<350){
@@ -292,98 +301,147 @@ if(click==true){
 }
 
 class Planet{
-  constructor(mass,pos,vel){
+  constructor(mass,x,y,vel){
     //let player choose or customize appearance
    // this.appearance = this.setAppearance();
     //positions of this planet in solar system
 
-    this.pos=pos;//position in space
+    //position in space
     //this.distToStars = dist(SolarSystem.massCenter.x,SolarSystem.massCenter.y,this.x,this.y);
     //list of moons
     this.moons = [];
     this.vel=vel;
     //mass for calculating gravity
+    this.x = x;
+    this.y = y;
     this.mass = mass;
     this.r=this.mass;
+    this.theta=0;
     this.color=random(255);
     //SolarSystem.planets.push(this);
+    this.accelerationX = 1; 
+    this.accelerationY = 1;
   }
 
   setAppearance(){
 
 
     fill(0,0,255);
-    ellipse(this.pos.x,this.pos.y,this.r,this.r);
+    ellipse(this.x,this.y,this.r,this.r);
 
-    this.pos.x=constrain(this.pos.x,100,900);
-    this.pos.y=constrain(this.pos.y,100,900);
+    //this.pos.x=constrain(this.pos.x,100,900);
+    //this.pos.y=constrain(this.pos.y,100,900);
 
   }
 
   move(){
 
-    this.pos.x+=1;
+   // let distanceFromSun = dist(this.pos.x, this.pos.y, width/2, height/2) // Calculates distance from planet to sun(middle of canvas)
+
+    // The closer the planet is to the sun the faster it orbits
+     this.theta += this.vel;
+    console.log(this.x,this.y)
+
+    this.x = this.r*cos(this.theta)
+    this.y = this.r*sin(this.theta)
+
+
+
+    //this.accelerationX += 1 //(width/2 - this.x )/distanceFromSun 
+  //  this.accelerationX += 1//(height/2 - this.x )/distanceFromSun 
+
+   // this.pos.x += this.accelerationX
+   // this.pos.y += this.accelerationY
+
+
 
   }
 }
 
 class Moon{
-  constructor(mass, pos, vel){
+  constructor(mass, x,y, vel){
     //let player choose or customize appearance
-  //  this.appearance = this.setAppearance();
-    //this.planet = Planet;
-   // this.x = x;
-   // this.y = y;
-    //this.distToPlanet = dist(Planet.x,Planet.y,this.x,this.y);
+    //this.appearance = this.setAppearance();
+    this.planet = Planet;
+    this.x = x;
+    this.y = y;
     //mass for calculating gravity
     this.mass = mass;
-    this.pos=this.mass;
-    this.pos=pos;
+    this.r=this.mass;
     this.vel=vel;
+    this.theta=0;
+    //this.distToPlanet = dist(Planet.pos.x,Planet.pos.y,this.pos.x,this.pos.y);
     //Planet.moons.push(this);
+
+
+    this.accelerationX = 1; 
+    this.accelerationY = 1;
   }
 
   setAppearance(){
 
+
    // image(this.appearance,this.x,this.y,this.mass);
 
    fill(128);
-   ellipse(this.pos.x,this.pos.y,this.mass);
+   ellipse(this.x,this.y,this.r);
 
-   this.pos.y=constrain(this.pos.y,50,900);
-   this.pos.x=constrain(this.pos.x,50,900);
+   this.y=constrain(this.y,50,900);
+   this.x=constrain(this.x,50,900);
 
   }
 
   move(){
+
+    this.theta += this.vel;
+    console.log(this.x,this.y)
+
+    this.x = this.r*cos(this.theta)
+    this.y = this.r*sin(this.theta)
+
+   // this.vel += (this.planet.pos.x- this.pos.x )/this.distToPlanet 
+   // this.vel += (this.planet.pos.y - this.pos.x )/this.distToPlanet 
+
+    //this.pos.x += this.vel
+   // this.pos.y += this.vel
 
   }
 }
 
 class Asteroid{
-  constructor(mass,pos,vel){
+  constructor(mass,x,y,vel){
     //let player choose or customize appearance
-    //this.appearance = this.setAppearance();
+    this.appearance = this.setAppearance();
     //positions of this asteroid in solar system
+        this.x = x;
+    this.y = y;
 
     //not sure yet how to calculate gravity attraction
     //mass for calculating gravity
     this.mass = mass;
-    this.pos=this.mass;
     this.vel=vel;//velocity 
-   // SolarSystem.asteroids.push(this);
+    //SolarSystem.asteroids.push(this);
+
+    this.accelerationX = 1; 
+    this.accelerationY = 1;
   }
 
   setAppearance(){
 
   fill(128);
-  ellipse(this.pos.x,this.pos.y,this.mass);
-
+  ellipse(this.x,this.y,this.r);
 
 
   }
 
   move(){
+
+    this.accelerationX += (this.planet.x- this.x )/this.distToPlanet 
+    this.accelerationX += (this.planet.y - this.x )/this.distToPlanet 
+
+    this.x += this.accelerationX
+    this.y += this.accelerationY
+
 
   }
 }
