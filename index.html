@@ -5,7 +5,6 @@
     <!-- load in the p5 core library -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
     <script src="sketch.js"></script>
-    <script src="sketchDemo.js"></script>
 
     <style>
       h3{
@@ -48,14 +47,13 @@
         width: 200px;
         height: 40%;
         left: 500px;
-        padding-top: 10%;
+        top: 60%;
       }
 
       #AppearanceCreation{
         position: fixed;
         width: 200px;
         height: 60%;
-        top: 40%;
         left: 500px;
       }
 
@@ -68,8 +66,6 @@
       }
 
       #p5canvas{
-        width: 90%;
-        position: fixed;
       }
 
       #description{
@@ -85,14 +81,6 @@
     <a href="progress_report.html">Progress Report</a>
     <h1>Outer Space!</h1>
     <div id="canvasContainer">
-      <div id="controlPanel">
-        <br>
-        <button id="solar_system" class="hidden" onclick="createSystem();">System</button>
-        <button id="star" onclick="createSystem()();">Star</button>
-        <button id="planet" onclick="createPlanet();">Planet</button><br><br>
-        <button id="moon" onclick="createMoon();">Moon</button>
-        <button id="asteroid" onclick="createAsteroid();">Asteroid</button>
-      </div>
       <div id="AppearanceCreation">
         Hue: <br><input type="range" id="h" min="0" max="360" step="1" value="180" oninput="changeH(this);"><br>
         Saturation: <br><input type="range" id="s" min="0" max="100" step="1" value="50" oninput="changeS(this);"><br>
@@ -100,45 +88,48 @@
         Size: <br><input type="range" id="z" min="5" max="100" step="1" value="52.5" oninput="changeSize(this);"><br>
         <div id="exampleCircle"></div>
       </div>
+      <div id="controlPanel">
+        <br>
+        <button id="systemButton" class="hidden" onclick="createSystem();">System</button>
+        <span id="bodyButtons">
+          <button id="star" onclick="initiate('star');">Star</button>
+          <button id="planet" onclick="initiate('planet');">Planet</button>
+          <br><br>
+          <button id="moon" onclick="initiate('moon');">Moon</button>
+          <button id="asteroid" onclick="initiate('asteroid');">Asteroid</button>
+        </span>
+        <br><br>
+        <button id="cancel" onclick="cancelInit();">Cancel</button>
+      </div>
+
     </div>
 
     <script>
       //DOM
-      let panel_game = document.getElementById('panel_game');
-      let timer = document.getElementById('timer');
-      let token_container = document.getElementById('token_container');
-      let panel_gameover = document.getElementById('panel_gameover');
-      let wrong_sound = document.getElementById('wrong_sound');
-      let correct_sound = document.getElementById('correct_sound');
-      let finishTime = document.getElementById('finishTime');
-      let bestTime = document.getElementById('bestTime');
-      let congrats = document.getElementById('congrats');
-      let start_over = document.getElementById('start_over');
-      let size_choice = document.querySelectorAll('.size');
-      let rank1 = document.querySelectorAll('.rank1');
-      let rank2 = document.querySelectorAll('.rank2');
-      let rank3 = document.querySelectorAll('.rank3');
+      let systemButton = document.getElementById('systemButton');
+      let bodyButtons = document.getElementById('bodyButtons');
+      //let X = document.querySelectorAll('.');
 
+      let hue = 180;
+      let saturation = 50;
+      let brightness = 50;
+      let largeness = 52.5;
 
 
       function changeH(value){
         hue = value.value;
-        console.log(hue);
       }
 
       function changeS(value){
         saturation = value.value;
-        console.log(saturation);
       }
 
       function changeB(value){
         brightness = value.value;
-        console.log(brightness);
       }
 
       function changeSize(value){
         largeness = value.value;
-        console.log(largeness);
       }
 
 
