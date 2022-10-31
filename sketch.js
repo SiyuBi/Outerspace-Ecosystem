@@ -65,6 +65,10 @@ class Planet{
     //mass for calculating gravity
     this.mass = mass;
     SolarSystem.planets.push(this);
+
+    //Acceleration of Planet
+    this.accelerationX = 1; 
+    this.accelerationY = 1;
   }
 
   setAppearance(){
@@ -72,6 +76,17 @@ class Planet{
   }
 
   move(){
+
+    const distanceFromSun = dist(this.x, this,y, width/2, height/2) // Calculates distance from planet to sun(middle of canvas)
+
+    // The closer the planet is to the sun the faster it orbits
+    this.accelerationX += (width/2 - this.x )/distanceFromSun 
+    this.accelerationX += (height/2 - this.x )/distanceFromSun 
+
+    this.x += this.accelerationX
+    this.y += this.accelerationY
+
+
 
   }
 }
@@ -87,6 +102,10 @@ class Moon{
     //mass for calculating gravity
     this.mass = mass;
     Planet.moons.push(this);
+
+
+    this.accelerationX = 1; 
+    this.accelerationY = 1;
   }
 
   setAppearance(){
@@ -95,6 +114,14 @@ class Moon{
 
   move(){
 
+    this.accelerationX += (this.planet.x- this.x )/this.distToPlanet 
+    this.accelerationX += (this.planet.y - this.x )/this.distToPlanet 
+
+    this.x += this.accelerationX
+    this.y += this.accelerationY
+
+
+    
   }
 }
 
@@ -109,6 +136,10 @@ class Asteroid{
     //mass for calculating gravity
     this.mass = mass;
     SolarSystem.asteroids.push(this);
+
+
+    this.accelerationX = 1; 
+    this.accelerationY = 1;
   }
 
   setAppearance(){
@@ -116,6 +147,13 @@ class Asteroid{
   }
 
   move(){
+
+    //the closer the asteroid is to a planet, the faster it orbits
+    this.accelerationX += (this.planet.x- this.x )/this.distToPlanet 
+    this.accelerationX += (this.planet.y - this.x )/this.distToPlanet 
+
+    this.x += this.accelerationX
+    this.y += this.accelerationY
 
   }
 }
