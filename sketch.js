@@ -98,11 +98,20 @@ class SolarSystem{
     translate(500,500);
     for (let i = 0; i < this.planets.length; i++){
       this.planets[i].move();
+      if (this.planets[i].mouseDistance < this.planets[i].size/2){
+        fill(0,255,0);
+      }
+      else {
+        fill(128);
+      }
       ellipse(this.planets[i].x, this.planets[i].y, this.planets[i].size, this.planets[i].size);
+      push();
+      translate(this.planets[i].x, this.planets[i].y);
       for (let j = 0; j < this.planets[i].moons.length; j++){
         this.planets[i].moons[j].move();
         ellipse(this.planets[i].moons[j].x, this.planets[i].moons[j].y, this.planets[i].moons[j].size, this.planets[i].moons[j].size);
       }
+      pop();
     }
     pop();
     for (let i = 0; i < this.asteroids.length; i++){
@@ -148,15 +157,19 @@ class Planet{
     this.color=random(255);
     this.accleration = 1;
     this.system = SolarSystem;
+    this.dist = dist(this.x,this.y,SolarSystem.stars[0].x,SolarSystem.stars[0].y)-this.size/*-SolarSystem.stars[0].size*/;
+    this.mouseDistance = 500;
     console.log(SolarSystem);
     SolarSystem.planets.push(this);
   }
 
   move(){
+    this.mouseDistance = dist(mouseX,mouseY,this.x,this.y);
 
-  this.theta += this.vel;
-  this.x = this.system.stars[0].size*cos(this.theta)
-  this.y = this.system.stars[0].size*sin(this.theta)
+    this.theta += this.vel;
+    this.x = this.dist*cos(this.theta)*1.5
+    this.y = this.dist*sin(this.theta)
+
   }
 }
 
@@ -175,15 +188,19 @@ class Moon{
     this.y = y;
     this.theta = 0;
   //  this.vel=vel;
+    this.dist = dist(this.x,this.y,Planet.x,Planet.y)-this.size/*-SolarSystem.stars[0].size*/;
     Planet.moons.push(this);
+    console.log(this.x,this.y,Planet.x,Planet.y);
   }
 
   move(){
+    this.theta += this.vel;
     /*
-   this.theta += this.vel;
-   this.x = cos(this.theta);
-   this.y = sin(this.theta);
-   */
+    this.x = this.system.stars[0].size*cos(this.theta)*1.5
+    this.y = this.system.stars[0].size*sin(this.theta)
+    */
+    this.x = this.dist*cos(this.theta)*1.5
+    this.y = this.dist*sin(this.theta)
   }
 }
 
@@ -239,7 +256,8 @@ function drawIndication(){
   }
 }
 
-function keyPressed() {
+function mousePressed() {
+  console.log(newElement);
   if (newElement != null){
     switch(newElement) {
       case 'star':
@@ -247,7 +265,7 @@ function keyPressed() {
         break;
       case 'planet':
         //create new planet
-        console.log(new Planet(largeness, mouseX,mouseY,0.05, currentSystem));
+        console.log(new Planet(largeness, mouseX,mouseY,int(random(1,9))*0.005, currentSystem));
         newElement = null;
         break;
       case 'moon':
@@ -255,13 +273,12 @@ function keyPressed() {
           //create new moon
           let closestPlanet = currentSystem.planets[0];
           for (let i = 0; i < currentSystem.planets.length; i++){
-            if (dist(mouseX, mouseY, currentSystem.planets[i].positionX, currentSystem.planets[i].positionY) <
-                dist(mouseX, mouseY, closestPlanet.positionX, closestPlanet.positionY)){
+            if (dist(mouseX, mouseY, currentSystem.planets[i].x, currentSystem.planets[i].y) <
+                dist(mouseX, mouseY, closestPlanet.x, closestPlanet.y)){
                   closestPlanet = currentSystem.planets[i];
                 }
           }
-          console.log(new Moon(largeness, mouseX,mouseY,0.05, closestPlanet));
-          console.log(closestPlanet);
+          new Moon(largeness,mouseX,mouseY,int(random(1,9))*0.005, closestPlanet);
           newElement = null;
         }
         else{
@@ -271,7 +288,7 @@ function keyPressed() {
         break;
       case 'asteroid':
         //create new asteroid
-        new Asteroid(largeness, mouseX,mouseY,0.06, currentSystem);
+        new Asteroid(largeness, mouseX,mouseY,60, currentSystem);
         newElement = null;
         break;
       default:
