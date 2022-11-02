@@ -103,7 +103,7 @@ class SolarSystem{
 }
 
 class Star{
-  
+
   constructor(size, x, y, SolarSystem){
     //let player choose or customize appearance
    // this.appearance = this.setAppearance();
@@ -149,7 +149,7 @@ class Planet{
   moveAndDisplay(){
     this.mouseDistance = dist(mouseX,mouseY,this.x,this.y);
 
-    
+
     this.x = cos( radians(this.theta) )* this.d + (width/2)
     this.y = sin( radians(this.theta) )* this.d + (height/2)
 
@@ -169,7 +169,7 @@ class Planet{
     }
 
     this.theta += this.vel;
- 
+
   }
 
   isMouseOver(){
@@ -211,8 +211,8 @@ class Moon{
   }
 
   moveAndDisplay(){
-   
-   
+
+
     this.x = cos( radians(this.theta) ) * this.d + this.planet.x;
     this.y = sin( radians(this.theta) ) * this.d + this.planet.y;
 
@@ -260,10 +260,6 @@ class Asteroid{
 }
 
 
-
-
-//Cindy's part
-
 let newElement = null;  //if there's an active newCreation, draw the new body at mouseX mouseY in draw() to indicate location until comfirmed
 
 function initiate(element){
@@ -298,36 +294,21 @@ function mousePressed() {
         break;
       case 'planet':
         //create new planet
-        let create=false;
-
-      for(let i=0;i<currentSystem.planets.length;i++){
-      if(currentSystem.planets[i].isMouseOver()){
-        currentSystem.planets[i].createMoon();
-        create=true;
-        break;
-      }
-  }
-
-  if(!create){
-    let d = dist(mouseX,mouseY,500,500);
-    console.log(new Planet(largeness, mouseX,mouseY, d,currentSystem));
-  }
-
-       
+        let d = dist(mouseX,mouseY,500,500);
+        new Planet(largeness, mouseX,mouseY, d,currentSystem);
         newElement = null;
         break;
       case 'moon':
         if (currentSystem.planets.length >= 1){
           //create new moon
-          let closestPlanet = currentSystem.planets[0];
-          for (let i = 0; i < currentSystem.planets.length; i++){
-            if (dist(mouseX, mouseY, currentSystem.planets[i].x, currentSystem.planets[i].y) <
-                dist(mouseX, mouseY, closestPlanet.x, closestPlanet.y)){
-                  closestPlanet = currentSystem.planets[i];
-                }
-          }
 
-          new Moon(largeness,mouseX,mouseY,d, closestPlanet);
+        for(let i=0;i<currentSystem.planets.length;i++){
+        if(currentSystem.planets[i].isMouseOver()){
+          currentSystem.planets[i].createMoon();
+          create=true;
+          break;
+          }
+        }
           newElement = null;
         }
         else{
