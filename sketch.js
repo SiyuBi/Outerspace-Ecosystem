@@ -159,7 +159,7 @@ class Planet{
   createMoon(){
     let moonDist = dist(this.x,this.y,mouseX,mouseY) + 20 + random(20);
 
-    this.moons.push( new Moon(largeness,moonDist,this));
+    this.moons.push( new Moon(moonDist,largeness,this));
 
   }
 
