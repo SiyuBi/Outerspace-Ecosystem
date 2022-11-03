@@ -227,7 +227,7 @@ class Asteroid{
     this.y = sin( radians(this.theta) ) * this.d + (height/2);
 
     fill(this.H,this.S,this.B);
-    ellipse(this.x,this.y,this.size,this.size+10);
+    ellipse(this.x,this.y,this.size,this.size);
 
     this.theta += this.vel;
   }
