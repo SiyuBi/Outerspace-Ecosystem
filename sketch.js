@@ -3,52 +3,38 @@
 let bg;
 let p1=0;
 let p2=1000;
-let star1;
-let star2;
-let star3;
-let stars=[];
 let str;
-let solar_s=false;
-let click=false;
-let d;
-let solar;
-let moon;
-let planet;
-let r;
-let solar_system;
 let currentSystem;
-let planetPos;
-let theta;
-let theta2;
-let moonPos;
-let r2;
-let created;
 
 function preload() {
   bg=loadImage("images/bg4.jpeg");
   star1=loadImage("images/str1.png");
   star2=loadImage("images/str2.png");
   star3=loadImage("images/str3.png");
- // solar=loadImage("images/bg3.jpeg");
 }
 
 function setup() {
-  let cnv = createCanvas(1000, 1000);
+  let cnv = createCanvas(windowWidth, windowHeight);
   cnv.id('p5canvas');
   noStroke();
   textAlign(CENTER, CENTER);
   imageMode(CENTER);
 
 
-    env=new Enviroment();
 
-    currentSystem = new SolarSystem();
-    str=new Star(250,width/2,height/2,currentSystem);
+  colorMode(HSB);
+  env=new Enviroment();
+
+  currentSystem = new SolarSystem();
+  str=new Star(250,width/2,height/2,currentSystem);
+  
 }
 
 function draw() {
 
    env.display();
+
+
 
    currentSystem.display();
    drawIndication();
@@ -60,15 +46,15 @@ class Enviroment{//where solar systems live
     this.stars=[];
   }
   display(){
-    image(bg,p1,500);
-    image(bg,p2,500);
-    p1-= 0.1;
-    p2-= 0.1;
-    if (p1<-500){
-      p1 = 500;
+    image(bg,p1,windowWidth/2);
+    image(bg,p2,windowHeight/2);
+    p1-= 0.3;
+    p2-= 0.3;
+    if (p1<-windowWidth/2){
+      p1 = windowWidth/2;
     }
-    if (p2>-500){
-      p2 = 500;
+    if (p2<-windowHeight/2){
+      p2 = windowHeight/2;
     }
   }
 }
@@ -86,7 +72,7 @@ class SolarSystem{
   display(){
     //instantiating star and planet objects
     for (let i = 0; i < this.stars.length; i++){
-      fill(249,215,28);
+      fill(60,90,90);
       ellipse(this.stars[i].x, this.stars[i].y, this.stars[i].size, this.stars[i].size);
     }
 
@@ -128,29 +114,18 @@ class Star{
 
 class Planet{
   constructor(size,x,y,d,SolarSystem){
-    //let player choose or customize appearance
-   // this.appearance = this.setAppearance();
-    //positions of this planet in solar system
     this.x = x;
     this.y = y;
     this.H = hue;
     this.S = saturation;
     this.B = brightness;
-    //this.distToStars = dist(SolarSystem.massCenter.x,SolarSystem.massCenter.y,this.x,this.y);
-    //list of moons
     this.moons = [];
-    //this.vel=vel;
-    //mass for calculating gravity
-    //this.mass = mass;
     this.d=d;
     this.theta=0;
     this.vel = random(1,2);
     this.size=size;
     this.color=random(255);
-    //this.accleration = 1;
     this.system = SolarSystem;
-    //this.dist = dist(this.x,this.y,SolarSystem.stars[0].x,SolarSystem.stars[0].y)-this.size/*-SolarSystem.stars[0].size*/;
-    //this.mouseDistance = 500;
     console.log(SolarSystem);
     SolarSystem.planets.push(this);
   }
@@ -196,25 +171,14 @@ class Planet{
 
 class Moon{
   constructor(size,d,Planet){
-    //let player choose or customize appearance
-  //  this.appearance = this.setAppearance();
     this.planet = Planet;
     this.H = hue;
     this.S = saturation;
     this.B = brightness;
-   // this.x = x;
-   // this.y = y;
-    //this.distToPlanet = dist(Planet.x,Planet.y,this.x,this.y);
-    //mass for calculating gravity
     this.size = size;
     this.vel = int(random(4,5));
-    //this.x = x;
-    //this.y = y;
     this.d=d;
     this.theta = 0;
-  //  this.vel=vel;
-    //this.dist = dist(this.x,this.y,Planet.x,Planet.y)/*-SolarSystem.stars[0].size*/;
-   // planet.moons.push(this);
     console.log(this.x,this.y,this.planet.x,this.planet.y);
   }
 
@@ -247,13 +211,9 @@ class Moon{
 class Asteroid{
   constructor(size,x,y,d,SolarSystem){
     //let player choose or customize appearance
-    //this.appearance = this.setAppearance();
-    //positions of this asteroid in solar system
     this.H = hue;
     this.S = saturation;
     this.B = brightness;
-    //not sure yet how to calculate gravity attraction
-    //mass for calculating gravity
     this.size = size;
     this.vel = random(1,3);
     this.x = x;
