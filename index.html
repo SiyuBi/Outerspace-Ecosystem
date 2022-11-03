@@ -5,8 +5,12 @@
     <!-- load in the p5 core library -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
     <script src="sketch.js"></script>
-
     <style>
+      canvas {
+        position: absolute;
+
+      }
+
       h3{
         position: absolute;
         left: 50%;
@@ -33,6 +37,23 @@
         display: none;
       }
 
+
+      #sketch1{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      #sketch2{
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        right: 5%;
+        bottom: 30%;
+      }
+      #p5canvas{
+        z-index: -1;
+      }
       #canvasContainer{
         position: fixed;
         width: 700px;
@@ -51,7 +72,7 @@
       }
 
       #AppearanceCreation{
-        position: fixed;
+        position: absolute;
         width: 200px;
         height: 60%;
         left: 500px;
@@ -86,7 +107,6 @@
         Saturation: <br><input type="range" id="s" min="0" max="100" step="1" value="50" oninput="changeS(this);"><br>
         Brightness: <br><input type="range" id="b" min="0" max="100" step="1" value="50" oninput="changeB(this);"><br>
         Size: <br><input type="range" id="z" min="5" max="100" step="1" value="52.5" oninput="changeSize(this);"><br>
-        <div id="exampleCircle"></div>
       </div>
       <div id="controlPanel">
         <br>
@@ -99,11 +119,11 @@
           <button id="asteroid" onclick="initiate('asteroid');">Asteroid</button>
         </span>
         <br><br>
-        <button id="cancel" onclick="cancelInit();">Cancel</button>
+
+        <button id="cancel" onclick="initiate('cancel');">Cancel</button>
+        <button id="cancel" onclick="initiate('destroy');">Destroy</button>
       </div>
-
     </div>
-
     <script>
       //DOM
       let systemButton = document.getElementById('systemButton');
@@ -131,7 +151,22 @@
       function changeSize(value){
         largeness = value.value;
       }
+      
+      let sketchCode1 = function(p) {
+        p.setup = function() {
+          p.createCanvas(100, 100);
+          p.noStroke();
+          p.colorMode(HSB);
+        }
 
+        // also create a draw function
+        p.draw = function() {
+          p.background(255);
+          p.fill(hue,saturation,brightness);
+          p.ellipse(50,50,largeness,largeness);
+        }
+      }
+      let sketch1 = new p5( sketchCode1 );
 
     </script>
 
