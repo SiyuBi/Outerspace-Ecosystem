@@ -6,6 +6,21 @@ let p2=1000;
 let str;
 let currentSystem;
 
+let state =1; 
+
+let starRandom1X ;
+let starRandom1Y;
+
+
+let starRandom3X ;
+let starRandom3Y;
+
+
+let starRandom2X ;
+let starRandom2Y;
+
+
+
 function preload() {
   bg=loadImage("images/bg4.jpeg");
   star1=loadImage("images/str1.png");
@@ -19,7 +34,27 @@ function setup() {
   noStroke();
   textAlign(CENTER, CENTER);
   imageMode(CENTER);
-  
+
+  // starRandom1X = random(100,200)
+  // starRandom1Y= random(100,windowHeight-200)
+
+
+  // starRandom2X = random(starRandom1X+400,starRandom1X + 700)
+  // starRandom2Y= random(100,windowHeight-200)
+
+  // starRandom3X = random(starRandom2X + 200,windowWidth -200 )
+  // starRandom3Y= random(100,windowHeight-200 )
+
+  starRandom1X = random(100,500)
+  starRandom1Y= random(100,800)
+
+
+  starRandom2X = random(starRandom1X+500,starRandom1X + 700)
+  starRandom2Y= random(100,800)
+
+  starRandom3X = random(starRandom2X + 500,starRandom2X + 800 )
+  starRandom3Y= random(100,800)
+
   colorMode(HSB);
   env=new Enviroment();
 
@@ -30,10 +65,23 @@ function setup() {
 
 function draw() {
 
-   env.display();
+  if(state == 0){
+  env.display();
 
    currentSystem.display();
    drawIndication();
+
+  }else if(state == 1){
+    env.display();
+    image(star1,starRandom1X,starRandom1Y)
+    image(star2,starRandom2X,starRandom2Y)
+    image(star3,starRandom3X,starRandom3Y)
+
+
+
+
+  }
+   
 }
 
 
@@ -261,6 +309,20 @@ function drawIndication(){
 }
 
 function mousePressed() {
+
+  if(state == 1){
+    if(dist(mouseX, mouseY, starRandom1X, starRandom1Y) < 50){
+      state = 0;
+    }
+
+    if(dist(mouseX, mouseY, starRandom2X, starRandom2Y) < 100){
+      state = 0;
+    }
+
+    if(dist(mouseX, mouseY, starRandom3X, starRandom3Y) < 100){
+      state = 0;
+    }
+  }
 
   if (newElement != null){
     switch(newElement) {
