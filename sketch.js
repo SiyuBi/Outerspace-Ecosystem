@@ -1,27 +1,10 @@
 // preload artwork
 
 let bg;
-let p1=0;
-let p2=1000;
-let star1;
-let star2;
-let star3;
-let stars=[];
+let p1=window.innerWidth*0.5;
+let p2=window.innerWidth*1.5;
 let str;
-let solar_s=false;
-let click=false;
-let d;
-let solar;
-let moon;
-let planet;
-let r;
-let solar_system;
 let currentSystem;
-let planetPos;
-let theta;
-let theta2;
-let moonPos;
-let r2;
 
 function preload() {
   bg=loadImage("images/bg4.jpeg");
@@ -32,103 +15,41 @@ function preload() {
 }
 
 function setup() {
-  let cnv = createCanvas(1000, 1000);
+  let cnv = createCanvas(windowWidth, windowHeight);
   cnv.id('p5canvas');
   noStroke();
   textAlign(CENTER, CENTER);
- // imageMode(CENTER);
+  imageMode(CENTER);
+  colorMode(HSB);
 
-  env=new Enviroment;
-
-    solar_system = new SolarSystem();
-    currentSystem = solar_system;
-    str=new Star(250,createVector(200,300),currentSystem);
-    theta=random(TWO_PI);
-    r = random(str.r,min(width/2,height/2));
-
-
-    planetPos=createVector(abs(r*cos(theta)),abs(r*sin(theta)));
-    planet=new Planet(100,planetPos,currentSystem);
-    theta2=random(TWO_PI);
-    r2=random(planet.r,min(width/2,height/2));
-    moonPos=createVector(abs(r2*cos(theta2),r2*sin(theta2)));
-    console.log(solar_system);
-    moon = new Moon(20,moonPos,planet);
+  currentSystem = new SolarSystem();
+  str=new Star(250,width/2,height/2,currentSystem);
+  console.log(currentSystem);
+  new Planet(dist(mouseX,mouseY,currentSystem.stars[0].x,currentSystem.stars[0].y),largeness,currentSystem);
+  //moon = new Moon(20,800,800,0.01,planet);
 }
 
 function draw() {
-
-  //translate(width/2,height/2);
-  background(0);//black background for now to represent space
-
-   env.display();
-
-   if(solar_s==false){//if they have no picked a star
-
-   str.setAppearance();
-   str.move();
-   str.detect_click();
-
-
-   }
-   else if(solar_s==true){//if  player has chosen a star, display the moon and planet
-      solar_system = new SolarSystem();
-      solar_system.display();
-      str.setAppearance();
-      planet.setAppearance();
-      moon.setAppearance();
-   }
+  //background images
+  image(bg,p1,window.innerHeight/2);
+  image(bg,p2,window.innerHeight/2);
+  p1-= 0.1;
+  p2-= 0.1;
+  if (p1<-window.innerWidth/2){
+    p1 = window.innerWidth*1.5;
+  }
+  if (p2<-window.innerWidth/2){
+    p2 = window.innerWidth*1.5;
+  }
 
    currentSystem.display();
    drawIndication();
 }
 
-function mouseClicked(){
-
-    click=true;
-
-}
-
-
-class Enviroment{//where solar systems live
-  constructor(){
-
-
-    this.stars=[];
-  }
-
-  display(){
-    image(bg,p1,0,width,height);
-    image(bg,p2,0,width,height);
-
-    p1-=2;
-    p2-=2;
-
-    if (p1 <= -1000) {
-    // move it back to the right of p2
-    p1 = p2 + 1000;
-
-    }
-  if (p2 <= -1000) {
-    // move it back to the right of p1
-    p2 = p1 + 1000;
-
-    }
-
-
-    }
-}
-
-
 class SolarSystem{
   constructor(){
     //maybe allow multiple starts in 1 system
     this.stars = [];
-    //positions of this system in galaxy
-    //this.x = x;
-    //this.y = y;
-    //this.z = z;
-    //this.massCenter = ??;
     //list of planets
     this.planets = [];
     //list of asteroids
@@ -137,232 +58,173 @@ class SolarSystem{
 
   display(){
     //instantiating star and planet objects
-    image(bg,0,0,width,height);
     for (let i = 0; i < this.stars.length; i++){
-      ellipse(this.stars[i].pos.x, this.stars[i].pos.x, this.stars[i].size, this.stars[i].size);
+      fill(255);
+      ellipse(this.stars[i].x, this.stars[i].y, this.stars[i].size, this.stars[i].size);
     }
+
+
     for (let i = 0; i < this.planets.length; i++){
-      ellipse(this.planets[i].pos.x, this.planets[i].pos.x, this.planets[i].size, this.planets[i].size);
-      for (let j = 0; j < this.planets[i].moons.length; j++){
-        ellipse(this.planets[i].moons[j].pos.x, this.planets[i].moons[j].pos.x, this.planets[i].moons[j].size, this.planets[i].moons[j].size);
-      }
+      this.planets[i].moveAndDisplay();
+      //ellipse(this.planets[i].x, this.planets[i].y, this.planets[i].size, this.planets[i].size);
     }
+
     for (let i = 0; i < this.asteroids.length; i++){
-      ellipse(this.asteroids[i].pos.x, this.asteroids[i].pos.x, this.asteroids[i].size, this.asteroids[i].size);
+      this.asteroids[i].moveAndDisplay();
     }
   }
 }
 
 class Star{
-  //x,y,appearance,mass,SolarSystem
-  constructor(size, pos, SolarSystem){
-    //let player choose or customize appearance
-   // this.appearance = this.setAppearance();
-    this.star_type=int(random(0,3));
-    //positions of this star in solar system (maybe fix at center?)
-    //this.x = random(-500);
-    //this.y = random(50,500);
-    this.pos=pos;
-    //this.vel=vel;
-    //mass for calculating gravity
+
+  constructor(size, x, y, SolarSystem){
+    this.picture=`star${int(random(0,3))}`;
+    this.x = x;
+    this.y = y;
     this.size = size;
-    this.pos.speed=random(2,5);
-    this.r=this.mass;
-    this.d;
-    this.noiseLocation=random(0,1000);
     SolarSystem.stars.push(this);
   }
 
-  setAppearance(){
-
-
-
-
-    if(this.star_type==0){
-      image(star1,this.pos.x,this.pos.y,this.r,this.r);
-
-
-    }
-
-    else if(this.star_type==1){
-
-      image(star2,this.pos.x,this.pos.y,this.r,this.r);
-
-
-    }
-
-    else if(this.star_type==2){
-
-      image(star3,this.pos.x,this.pos.y,this.r,this.r);
-
-    }
-
-
-    if(this.x>width){
-      this.pos.x = random(-1000);
-      this.pos.y = random(20,500);
-      this.speed=random(2,5);
-      this.star_type=int(random(0,3));
-    }
-
-    if(solar_s==true){
-      this.pos.x=400;
-      this.pos.y=400;
-    }
-
-
-
-  }
-
-
-  move(){
-
-    this.pos.x+=this.pos.speed;
-
-    let moveAmount= map( noise(this.noiseLocation), 0,1,-1,1);
-    this.pos.y+=moveAmount;
-    this.noiseLocation+=0.02;
-    this.pos.y=constrain(this.pos.y,50,800);
-
-
-  }
-
-
-  detect_click(){
-
-    this.d=dist(mouseX, mouseY, this.pos.x,this.pos.y);
-
-
-    //this.d = dist(mouseX, mouseY, this.x,this.y);
-if(click==true){
-    if(this.d<350){
-      solar_s=true;
-  }
-}
-  }
 }
 
 class Planet{
-  constructor(size,pos,SolarSystem){
-    //let player choose or customize appearance
-   // this.appearance = this.setAppearance();
-    //positions of this planet in solar system
-
-    this.pos=pos;//position in space
-    //this.distToStars = dist(SolarSystem.massCenter.x,SolarSystem.massCenter.y,this.x,this.y);
-    //list of moons
+  constructor(d,size,SolarSystem) {
+    this.H = hue;
+    this.S = saturation;
+    this.B = brightness;
+    this.d = d;
+    this.angle = 0;
+    this.x = 0;
+    this.y = 0;
+    this.size = largeness;
     this.moons = [];
-    //this.vel=vel;
-    //mass for calculating gravity
-    //this.mass = mass;
-    this.size=size;
-    this.color=random(255);
-    console.log(SolarSystem);
+    this.speed = random(0.5, 2);
+    this.system = SolarSystem;
     SolarSystem.planets.push(this);
   }
 
-  setAppearance(){
+  moveAndDisplay() {
+    this.x = sin(radians(this.angle)) * this.d + this.system.stars[0].x;
+    this.y = cos(radians(this.angle)) * this.d + this.system.stars[0].y;
 
+    fill(this.H,this.S,this.B);
+    if (this.isMouseOver()) {
+      fill(255);
+    }
 
-    fill(0,0,255);
-    ellipse(this.pos.x,this.pos.y,this.r,this.r);
+    ellipse(this.x, this.y, this.size, this.size);
 
-    this.pos.x=constrain(this.pos.x,100,900);
-    this.pos.y=constrain(this.pos.y,100,900);
+    // draw our moons
+    for (let i = 0; i < this.moons.length; i++) {
+      this.moons[i].moveAndDisplay();
+    }
+
+    this.angle += this.speed;
+  }
+
+  isMouseOver(){
+    if(dist(mouseX,mouseY,this.x,this.y)<(this.size/2)){
+      return true
+    }
+
+    return false;
 
   }
 
-  move(){
-
-    this.pos.x+=1;
-
+  createMoon(){
+    let moonDist = this.size/2 + largeness/2 + random(largeness/5,largeness);
+    this.moons.push( new Moon(moonDist,largeness,this));
   }
+
 }
 
 class Moon{
-  constructor(size, pos, Planet){
-    //let player choose or customize appearance
-  //  this.appearance = this.setAppearance();
-    //this.planet = Planet;
-   // this.x = x;
-   // this.y = y;
-    //this.distToPlanet = dist(Planet.x,Planet.y,this.x,this.y);
-    //mass for calculating gravity
+  constructor(d,size,planet) {
+    this.H = hue;
+    this.S = saturation;
+    this.B = brightness;
+    this.planet = planet;
     this.size = size;
-    this.pos=pos;
-  //  this.vel=vel;
-    Planet.moons.push(this);
+    this.d = d;
+    this.angle = 0;
+    this.speed = random(0.5, 3);
+    }
+
+    moveAndDisplay() {
+    this.x = sin(radians(this.angle)) * this.d + this.planet.x;
+    this.y = cos(radians(this.angle)) * this.d + this.planet.y;
+
+    fill(this.H,this.S,this.B);
+    ellipse(this.x, this.y, this.size, this.size);
+
+    this.angle += this.speed;
   }
 
-  setAppearance(){
+   isMouseOver(){
+    if(dist(mouseX,mouseY,this.x,this.y)<(this.size/2)){
+      return true;
+    }
 
-   // image(this.appearance,this.x,this.y,this.mass);
-
-   fill(128);
-   ellipse(this.pos.x,this.pos.y,this.mass);
-
-   this.pos.y=constrain(this.pos.y,50,900);
-   this.pos.x=constrain(this.pos.x,50,900);
-
-  }
-
-  move(){
+    return false;
 
   }
 }
 
 class Asteroid{
-  constructor(size,pos,SolarSystem){
+  constructor(d,size,SolarSystem){
     //let player choose or customize appearance
-    //this.appearance = this.setAppearance();
-    //positions of this asteroid in solar system
-
-    //not sure yet how to calculate gravity attraction
-    //mass for calculating gravity
+    this.H = hue;
+    this.S = saturation;
+    this.B = brightness;
     this.size = size;
-    this.pos = pos;
+    this.speed = random(1,3);
+    this.d = d;
+    this.system=SolarSystem;
+    this.angle = 0;
+    this.x = 0;
+    this.y = 0;
     SolarSystem.asteroids.push(this);
-    console.log(SolarSystem);
   }
 
-  setAppearance(){
 
-  fill(128);
-  ellipse(this.pos.x,this.pos.y,this.mass);
+  moveAndDisplay(){
+
+    this.x = sin(radians(this.angle)) * this.d * 1.5 + this.system.stars[0].x;
+    this.y = cos(radians(this.angle)) * this.d + this.system.stars[0].y;
+
+    fill(this.H,this.S,this.B);
+    ellipse(this.x,this.y,this.size,this.size*1.3);
+    this.angle += this.speed;
   }
 
-  move(){
-
+   isMouseOver(){
+    if(dist(mouseX,mouseY,this.x,this.y)<this.size/2){
+      return true;
+    }
+    return false;
   }
 }
 
-
-//Cindy's part
 
 let newElement = null;  //if there's an active newCreation, draw the new body at mouseX mouseY in draw() to indicate location until comfirmed
 
 function initiate(element){
   newElement = element;
-  //stopPropagation();
-}
-
-function cancelInit(){
-  newElement = null;
 }
 
 function drawIndication(){
-  //call this in draw()
-
-  if (newElement){
+  if (newElement == 'planet' || newElement == 'moon'){
     //image sth at mouseX mouseY
-    colorMode(HSB);
     fill(hue,saturation,brightness);
     ellipse(mouseX,mouseY,largeness,largeness);
-    colorMode(RGB);
+  }
+  else if (newElement == 'asteroid'){
+    ellipse(mouseX,mouseY,largeness,largeness*1.3);
   }
 }
 
-function keyPressed() {
+function mousePressed() {
+
   if (newElement != null){
     switch(newElement) {
       case 'star':
@@ -370,21 +232,20 @@ function keyPressed() {
         break;
       case 'planet':
         //create new planet
-        console.log(new Planet(largeness, createVector(mouseX,mouseY), currentSystem));
+        let dPlanet = dist(mouseX,mouseY,currentSystem.stars[0].x,currentSystem.stars[0].y);
+        new Planet(dPlanet,largeness,currentSystem);
         newElement = null;
         break;
       case 'moon':
         if (currentSystem.planets.length >= 1){
           //create new moon
-          let closestPlanet = currentSystem.planets[0];
-          for (let i = 0; i < currentSystem.planets.length; i++){
-            if (dist(mouseX, mouseY, currentSystem.planets[i].positionX, currentSystem.planets[i].positionY) <
-                dist(mouseX, mouseY, closestPlanet.positionX, closestPlanet.positionY)){
-                  closestPlanet = currentSystem.planets[i];
-                }
-          }
-          console.log(new Moon(largeness, createVector(mouseX,mouseY), closestPlanet));
-          console.log(closestPlanet);
+
+        for(let i=0;i<currentSystem.planets.length;i++){
+        if(currentSystem.planets[i].isMouseOver()){
+          currentSystem.planets[i].createMoon();
+          break;
+        }
+        }
           newElement = null;
         }
         else{
@@ -394,7 +255,19 @@ function keyPressed() {
         break;
       case 'asteroid':
         //create new asteroid
-        new Asteroid(largeness, createVector(mouseX,mouseY), currentSystem);
+        let dAsteroid = dist(mouseX,mouseY,currentSystem.stars[0].x,currentSystem.stars[0].y);
+        new Asteroid(dAsteroid,largeness,currentSystem);
+        newElement = null;
+        break;
+      case 'destroy':
+        for (let i = 0; i < currentSystem.planets.length;i++){
+          if (currentSystem.planets[i].isMouseOver()){
+            currentSystem.planets.splice(i,1);
+            i--;
+          }
+        }
+        newElement = null;
+      case 'cancel':
         newElement = null;
         break;
       default:
