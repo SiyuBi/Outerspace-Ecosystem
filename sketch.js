@@ -15,8 +15,11 @@ let starRandom1Y;
 var yNoiseOffset
 var yMovement
 
-var xNoiseOffset
-var xMovement
+var OneyNoiseOffset
+var OneyMovement
+
+var TwoyNoiseOffset
+var TwoyMovement
 
 let starRandom3X ;
 let starRandom3Y;
@@ -40,6 +43,9 @@ function setup() {
   noStroke();
   textAlign(CENTER, CENTER);
   imageMode(CENTER);
+  yNoiseOffset = random(0,10)
+  OneyNoiseOffset = random(10,20)
+  TwoyNoiseOffset = random(20,30)
 
   // starRandom1X = random(100,200)
   // starRandom1Y= random(100,windowHeight-200)
@@ -89,23 +95,54 @@ function draw() {
     image(star2,starRandom2X,starRandom2Y)
     image(star3,starRandom3X,starRandom3Y)
 
-    yNoiseOffset = random(1000,2000);
-    yMovement = map( noise(this.yNoiseOffset), 0, 1, -2, 2);
+    
+    yMovement = map( noise(yNoiseOffset), 0, 1, -2, 2);
+
+    OneyMovement = map( noise(OneyNoiseOffset), 0, 1, -2, 2);
+    TwoyMovement = map( noise(TwoyNoiseOffset), 0, 1, -2, 2);
 
 
 
 
 
-    if(starRandom3X > windowWidth+100){
+    if(starRandom3X > windowWidth+120){
       starRandom3X = -100
       
 
     }else if(starRandom3Y > windowHeight+100){
-      starRandom3Y = -100
+      starRandom3Y = -99
+    }else if(starRandom3Y < -100){
+      starRandom3Y = windowHeight
+    }
+
+    if(starRandom1X > windowWidth+100){
+      starRandom1X = -100
+      
+
+    }else if(starRandom1Y > windowHeight+100){
+      starRandom1Y = -50
+    }else if(starRandom1Y < -50){
+      starRandom1Y = windowHeight
+    }
+
+
+    if(starRandom2X > windowWidth+100){
+      starRandom2X = -100
+      
+
+    }else if(starRandom2Y > windowHeight+100){
+      starRandom2Y = -100
     }
 
     starRandom3Y += yMovement
     yNoiseOffset += 0.01 ;
+
+
+    starRandom1Y += OneyMovement
+    OneyNoiseOffset += 0.01;
+
+    starRandom2Y += TwoyMovement
+    TwoyNoiseOffset += 0.01;
 
  
 
