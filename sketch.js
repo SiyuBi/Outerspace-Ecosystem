@@ -12,6 +12,12 @@ let starRandom1X ;
 let starRandom1Y;
 
 
+var yNoiseOffset
+var yMovement
+
+var xNoiseOffset
+var xMovement
+
 let starRandom3X ;
 let starRandom3Y;
 
@@ -71,11 +77,43 @@ function draw() {
    currentSystem.display();
    drawIndication();
 
+   if(frameCount % 100 == 0){
+    console.log(currentSystem.planets)
+
+
+   }
+
   }else if(state == 1){
     env.display();
     image(star1,starRandom1X,starRandom1Y)
     image(star2,starRandom2X,starRandom2Y)
     image(star3,starRandom3X,starRandom3Y)
+
+    yNoiseOffset = random(1000,2000);
+    yMovement = map( noise(this.yNoiseOffset), 0, 1, -2, 2);
+
+
+
+
+
+    if(starRandom3X > windowWidth+100){
+      starRandom3X = -100
+      
+
+    }else if(starRandom3Y > windowHeight+100){
+      starRandom3Y = -100
+    }
+
+    starRandom3Y += yMovement
+    yNoiseOffset += 0.01 ;
+
+ 
+
+
+    starRandom3X++
+    starRandom2X++
+    starRandom1X++
+
 
 
 
