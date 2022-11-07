@@ -5,19 +5,76 @@
     <!-- load in the p5 core library -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
     <script src="sketch.js"></script>
-
     <style>
+      canvas {
+        position: absolute;
+
+      }
+
       h3{
         position: absolute;
         left: 50%;
         transform: translate(-50%, 0%);
       }
 
+      h1{
+        position: fixed;
+        left: 50%;
+        transform: translate(-50%, 0%);
+      }
+
+      a{
+        position: absolute;
+      }
+
+      button{
+        font-family: Comic Sans MS, Comic Sans, cursive;
+        font-size: 15px;
+        display: inline-block;
+        width: 48%;
+        height: 30px;
+      }
+
+      input{
+        width: 90%;
+      }
+
+      .hidden{
+        display: none;
+      }
+
       #p5canvas{
-          position: fixed;
-          left: 90%;
-          top: 0%;
-          transform: translate(-90%, 0%);
+        z-index: -1;
+      }
+
+      #p5sketch{
+        position: relative;
+        padding: 50px;
+        padding-top: 0px;
+      }
+
+      #panelContainer{
+        font-family: Comic Sans MS, Comic Sans, cursive;
+        position: absolute;
+        width: 300px;
+        right: 5%;
+        height: 80%;
+        top: 5%;
+        background-color: rgba(255,255,255,0.2);
+        color: white;
+        padding: 5px;
+      }
+
+      #AppearanceCreation{
+        position: relative;
+        font-size: 25px;
+      }
+
+      #controlPanel{
+        position: relative;
+      }
+
+      #p5canvas{
       }
 
       #description{
@@ -25,11 +82,89 @@
         width: 40%;
         overflow: auto;
       }
+
     </style>
 
   </head>
   <body>
-    <div id="description">
+    <a href="progress_report.html">Progress Report</a>
+    <div id="panelContainer">
+      <div id="AppearanceCreation">
+        Hue: <br><input type="range" id="h" min="0" max="360" step="1" value="180" oninput="changeH(this);"><br>
+        Saturation: <br><input type="range" id="s" min="0" max="100" step="1" value="50" oninput="changeS(this);"><br>
+        Brightness: <br><input type="range" id="b" min="0" max="100" step="1" value="50" oninput="changeB(this);"><br>
+        Size: <br><input type="range" id="z" min="5" max="200" step="1" value="50" oninput="changeSize(this);"><br>
+
+      </div>
+      <div id="controlPanel">
+        <br>
+        <button id="systemButton" class="hidden" onclick="createSystem();">System</button>
+        <span id="bodyButtons">
+          <button id="star" onclick="initiate('star');">Star</button>
+          <button id="planet" onclick="initiate('planet');">Planet</button>
+          <br><br>
+          <button id="moon" onclick="initiate('moon');">Moon</button>
+          <button id="asteroid" onclick="initiate('asteroid');">Asteroid</button>
+        </span>
+        <br><br>
+        <button id="cancel" onclick="initiate('cancel');">Cancel</button>
+        <button id="cancel" onclick="initiate('destroy');">Destroy</button>
+        <br><br>
+        <div id = "p5sketch">
+          <!-- p5 instance will be created here -->
+        </div>
+      </div>
     </div>
+    <script>
+      //DOM
+      let systemButton = document.getElementById('systemButton');
+      let bodyButtons = document.getElementById('bodyButtons');
+      //let X = document.querySelectorAll('.');
+
+      let hue = 180;
+      let saturation = 50;
+      let brightness = 50;
+      let largeness = 52.5;
+
+
+      function changeH(value){
+        hue = value.value;
+      }
+
+      function changeS(value){
+        saturation = value.value;
+      }
+
+      function changeB(value){
+        brightness = value.value;
+      }
+
+      function changeSize(value){
+        largeness = value.value;
+      }
+
+      let sketchCode1 = function(p) {
+        // p.preload = function(){
+        //   bg=loadImage("images/bg4.jpeg");
+        // }
+        p.setup = function() {
+          p.createCanvas(202, 202);
+          p.stroke(255);
+          p.colorMode(HSB);
+          p.imageMode(CENTER);
+        }
+
+        // also create a draw function
+        p.draw = function() {
+          p.background(255);
+          //p.image(bg,101,101);
+          p.fill(hue,saturation,brightness);
+          p.ellipse(101,101,largeness,largeness);
+        }
+      }
+      let myp5 = new p5(sketchCode1, document.getElementById('p5sketch'));
+
+    </script>
+
   </body>
 </html>
