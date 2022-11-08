@@ -4,10 +4,12 @@
     <title>Space!</title>
     <!-- load in the p5 core library -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/addons/p5.sound.min.js"></script>
     <script src="sketch.js"></script>
     <style>
       canvas {
         position: absolute;
+        background-color: grey;
 
       }
 
@@ -28,63 +30,70 @@
       }
 
       button{
+        font-family: Comic Sans MS, Comic Sans, cursive;
+        font-size: 15px;
         display: inline-block;
         width: 48%;
-        height: 25px;
+        height: 30px;
+      }
+
+      input{
+        width: 90%;
       }
 
       .hidden{
         display: none;
       }
 
-
-      #sketch1{
-        position: absolute;
-        width: 100%;
-        height: 100%;
-      }
-
-      #sketch2{
-        position: absolute;
-        width: 100px;
-        height: 100px;
-        right: 5%;
-        bottom: 30%;
-      }
       #p5canvas{
         z-index: -1;
       }
-      #canvasContainer{
-        position: fixed;
-        width: 700px;
-        height: 500px;
-        left: 50%;
-        top: 15%;
-        transform: translate(-50%, 0%);
+
+      #p5sketch{
+        position: relative;
+        padding: 50px;
+        padding-top: 0px;
       }
 
-      #controlPanel{
-        position: fixed;
-        width: 200px;
-        height: 40%;
-        left: 500px;
-        top: 60%;
+      #instructions{
+        background-color: grey;
+        margin: auto;
+        text-align: center;
+        display: block;
+        position: absolute;
+        color: white;
+        width: 600px;
+        height: 400px;
+        right: 25%;
+        top: 30%;
+        padding: 5px;
+        border-style: dashed;
+        font-family: Comic Sans MS, Comic Sans, cursive;
+
+
+      }
+
+      #panelContainer{
+
+        font-family: Comic Sans MS, Comic Sans, cursive;
+        position: absolute;
+        width: 300px;
+        right: 5%;
+        height: 80%;
+        display: none;
+        top: 5%;
+        background-color: rgba(255,255,255,0.2);
+        color: white;
+        padding: 5px;
       }
 
       #AppearanceCreation{
-        position: absolute;
-        width: 200px;
-        height: 60%;
-        left: 500px;
-        color:white;
+        position: relative;
+        font-size: 25px;
       }
 
-      #exampleCircle{
-        padding-left: 50%;
-      }
-
-      #circle{
-        transform: translate(-50%, 0%);
+      #controlPanel{
+        position: relative;
       }
 
       #p5canvas{
@@ -100,15 +109,37 @@
 
   </head>
   <body>
+
+    <div>
+
+
+
+    <div>
+
+      <div id="instructions">
+
+    <h2>Instructions:</h2>
+    <p>To play this simulation, please select a star from what is displayed in order to enter your very own solar system.</p>
+    <br>
+    <p>Once you're inside your solar system, start customizing the color and size scale to fit what you want, then drag and place whichever object you'd like into the solar system for it to start orbiting. To add moons to planets, simply click on the moon button, then click on the planet in which you'd like to add the moon to. You can place any number of moons to one planet!</p>
+
+
+    <button id="start" onclick="start()">Start!</button>
+
+
+
+    </div>
     <a href="progress_report.html">Progress Report</a>
-    <h1>Outer Space!</h1>
-    <div id="canvasContainer">
+    <div id="panelContainer">
       <div id="AppearanceCreation">
         Hue: <br><input type="range" id="h" min="0" max="360" step="1" value="180" oninput="changeH(this);"><br>
         Saturation: <br><input type="range" id="s" min="0" max="100" step="1" value="50" oninput="changeS(this);"><br>
         Brightness: <br><input type="range" id="b" min="0" max="100" step="1" value="50" oninput="changeB(this);"><br>
-        Size: <br><input type="range" id="z" min="5" max="100" step="1" value="52.5" oninput="changeSize(this);"><br>
+        Size: <br><input type="range" id="z" min="5" max="200" step="1" value="50" oninput="changeSize(this);"><br>
+
       </div>
+
+  
       <div id="controlPanel">
         <br>
         <button id="systemButton" class="hidden" onclick="createSystem();">System</button>
@@ -120,10 +151,40 @@
           <button id="asteroid" onclick="initiate('asteroid');">Asteroid</button>
         </span>
         <br><br>
-
         <button id="cancel" onclick="initiate('cancel');">Cancel</button>
         <button id="cancel" onclick="initiate('destroy');">Destroy</button>
-      </div>
+        <br><br>
+
+
+        <div id="controls">
+
+<!--          <label for="paint">Choose a Color:</label>
+
+        <select id="color_dropdown" oninput="chooseColor(this);">
+          <option value="#FF0000" selected>Red</option>
+          <option value="#2F5233">Green</option>
+          <option value="#0000D1">Blue</option>
+          <option value="#FFFF00">Yellow</option>
+          <option value="#964B00">Brown</option>
+          <option value="#FFC0CB">Pink</option>
+          <option value="#FFFFFF">white</option>
+          <option value="#000000">black</option>
+
+        </select> 
+ -->
+
+
+      <div id="lucky">
+
+        <button for="lucky" onclick="buttonFun();">Fun Button</button>
+            <button for="lucky" onclick="buttonUnFun();">Stop</button>
+      </div> 
+
+        <div id = "p5sketch">
+          <!-- p5 instance will be created here -->
+        </div>
+
+   
     </div>
     <script>
       //DOM
@@ -134,7 +195,10 @@
       let hue = 180;
       let saturation = 50;
       let brightness = 50;
-      let largeness = 52.5;
+      let largeness = 50;
+      let colorToUse=0;
+
+
 
 
       function changeH(value){
@@ -152,24 +216,88 @@
       function changeSize(value){
         largeness = value.value;
       }
-      
+
+
+    function chooseColor(color){
+
+        colorToUse=color.value
+  
+   
+      }
+
+
+ 
       let sketchCode1 = function(p) {
+        // p.preload = function(){
+        //   bg=loadImage("images/bg4.jpeg");
+        // }
         p.setup = function() {
-          p.createCanvas(100, 100);
-          p.noStroke();
+          p.createCanvas(202, 202);
+          p.stroke(255);
           p.colorMode(HSB);
+          p.imageMode(CENTER);
+          //p.color=0;
+          //let h=100;
+          //let s=100;
+          //let b=100;
+          //p.stroke(0);
+          //p.strokeWeight(10);
+          
+          
+      
+   
+  
+   
+       
         }
 
         // also create a draw function
         p.draw = function() {
+
+
           p.background(255);
+
+        
           p.fill(hue,saturation,brightness);
-          p.ellipse(50,50,largeness,largeness);
+          p.noStroke();
+          p.ellipse(101,101,largeness,largeness);
+              
+          //let px=p.mouseX;
+          //let py=p.mouseY;
+
+    
+
+        /*let d=dist(px,py,101,101);
+
+        if(p.mouseIsPressed){
+        if(d<=51.5){
+        console.log("entered")
+
+        p.stroke(colorToUse);
+        p.strokeWeight(20);
+        //p.noStroke();
+        p.line(px,py, p.pmouseX, p.pmouseY);
+
+          
         }
-      }
-      let sketch1 = new p5( sketchCode1 );
+
+
+      }*/
+
+   
+
+
+        }
+
+
+
+    
+
+    }
+      let myp5 = new p5(sketchCode1, document.getElementById('p5sketch'));
 
     </script>
 
   </body>
+
 </html>
