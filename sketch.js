@@ -1,3 +1,27 @@
+let state =1; 
+
+var starImage; 
+
+let starRandom1X ;
+let starRandom1Y;
+
+
+var yNoiseOffset
+var yMovement
+
+var OneyNoiseOffset
+var OneyMovement
+
+var TwoyNoiseOffset
+var TwoyMovement
+
+let starRandom3X ;
+let starRandom3Y;
+
+
+let starRandom2X ;
+let starRandom2Y;
+
 // preload artwork
 
 let bg;
@@ -21,6 +45,24 @@ function preload() {
 }
 
 function setup() {
+
+  yNoiseOffset = random(0,10)
+  OneyNoiseOffset = random(10,20)
+  TwoyNoiseOffset = random(20,30)
+
+
+
+  starRandom1X = random(100,500)
+  starRandom1Y= random(100,800)
+
+
+  starRandom2X = random(starRandom1X+500,starRandom1X + 700)
+  starRandom2Y= random(100,800)
+
+  starRandom3X = random(starRandom2X + 500,starRandom2X + 800 )
+  starRandom3Y= random(100,800)
+
+
   let cnv = createCanvas(windowWidth, windowHeight);
   cnv.id('p5canvas');
   noStroke();
@@ -46,8 +88,70 @@ function draw() {
     p2 = window.innerWidth*1.5;
   }
 
-   currentSystem.display();
-   drawIndication();
+  if(state == 0){
+    currentSystem.display();
+    drawIndication();
+
+  }else if(state==1){
+    image(star1,starRandom1X,starRandom1Y)
+    image(star2,starRandom2X,starRandom2Y)
+    image(star3,starRandom3X,starRandom3Y)
+    yMovement = map( noise(yNoiseOffset), 0, 1, -2, 2);
+
+    OneyMovement = map( noise(OneyNoiseOffset), 0, 1, -2, 2);
+    TwoyMovement = map( noise(TwoyNoiseOffset), 0, 1, -2, 2);
+
+
+
+
+
+    if(starRandom3X > windowWidth+120){
+      starRandom3X = -100
+      
+
+    }else if(starRandom3Y > windowHeight+100){
+      starRandom3Y = -99
+    }else if(starRandom3Y < -100){
+      starRandom3Y = windowHeight
+    }
+
+    if(starRandom1X > windowWidth+100){
+      starRandom1X = -100
+      
+
+    }else if(starRandom1Y > windowHeight+100){
+      starRandom1Y = -50
+    }else if(starRandom1Y < -50){
+      starRandom1Y = windowHeight
+    }
+
+
+    if(starRandom2X > windowWidth+100){
+      starRandom2X = -100
+      
+
+    }else if(starRandom2Y > windowHeight+100){
+      starRandom2Y = -100
+    }
+
+    starRandom3Y += yMovement
+    yNoiseOffset += 0.01 ;
+
+
+    starRandom1Y += OneyMovement
+    OneyNoiseOffset += 0.01;
+
+    starRandom2Y += TwoyMovement
+    TwoyNoiseOffset += 0.01;
+
+ 
+
+
+    starRandom3X++
+    starRandom2X++
+    starRandom1X++
+  }
+ 
 }
 
 class SolarSystem{
@@ -64,7 +168,8 @@ class SolarSystem{
     //instantiating star and planet objects
     for (let i = 0; i < this.stars.length; i++){
       fill(255);
-      ellipse(this.stars[i].x, this.stars[i].y, this.stars[i].size, this.stars[i].size);
+    
+      image(starImage, this.stars[i].x, this.stars[i].y, this.stars[i].size, this.stars[i].size);
     }
 
 
@@ -230,6 +335,29 @@ function drawIndication(){
 }
 
 function mousePressed() {
+
+  
+
+    if(state == 1){
+      if(dist(mouseX, mouseY, starRandom1X, starRandom1Y) < 50){
+        state = 0;
+        starImage = star1
+
+      }
+  
+      if(dist(mouseX, mouseY, starRandom2X, starRandom2Y) < 100){
+        state = 0;
+        starImage = star2
+
+      }
+  
+      if(dist(mouseX, mouseY, starRandom3X, starRandom3Y) < 100){
+        state = 0;
+        starImage = star3
+
+      }
+    }
+    
   const newAngle = originalAngle();
   if (newElement != null){
     switch(newElement) {
@@ -308,3 +436,4 @@ function originalAngle(){
     return atan2(Math.abs(distX),distY)+180;
   }
 }
+
