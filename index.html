@@ -54,6 +54,7 @@
       }
 
       #panelContainer{
+        
         font-family: Comic Sans MS, Comic Sans, cursive;
         position: absolute;
         width: 300px;
@@ -96,6 +97,8 @@
         Size: <br><input type="range" id="z" min="5" max="200" step="1" value="50" oninput="changeSize(this);"><br>
 
       </div>
+
+  
       <div id="controlPanel">
         <br>
         <button id="systemButton" class="hidden" onclick="createSystem();">System</button>
@@ -110,9 +113,35 @@
         <button id="cancel" onclick="initiate('cancel');">Cancel</button>
         <button id="cancel" onclick="initiate('destroy');">Destroy</button>
         <br><br>
+
+
+        <div id="controls">
+
+ <!--        <label for="paint">Choose a Color:</label>
+
+        <select id="color_dropdown" oninput="chooseColor(this);">
+          <option value="#FF0000" selected>Red</option>
+          <option value="#2F5233">Green</option>
+          <option value="#0000D1">Blue</option>
+          <option value="#FFFF00">Yellow</option>
+          <option value="#964B00">Brown</option>
+          <option value="#FFC0CB">Pink</option>
+          <option value="#FFFFFF">white</option>
+          <option value="#000000">black</option>
+
+        </select> -->
+
+
+
+<!--       <div id="perlin">
+
+        <button for="perlin" onclick="genPerlin();">Feeling Lucky</button>
+      </div> -->
+
         <div id = "p5sketch">
           <!-- p5 instance will be created here -->
         </div>
+
       </div>
     </div>
     <script>
@@ -124,7 +153,8 @@
       let hue = 180;
       let saturation = 50;
       let brightness = 50;
-      let largeness = 52.5;
+      let largeness = 120;
+      let colorToUse=0;
 
 
       function changeH(value){
@@ -143,6 +173,24 @@
         largeness = value.value;
       }
 
+
+    function chooseColor(color){
+
+        colorToUse=color.value
+        
+
+
+
+
+         // saturation=color.value
+         // brightness=color.value
+
+
+   
+      }
+
+
+ 
       let sketchCode1 = function(p) {
         // p.preload = function(){
         //   bg=loadImage("images/bg4.jpeg");
@@ -152,16 +200,61 @@
           p.stroke(255);
           p.colorMode(HSB);
           p.imageMode(CENTER);
+          //p.color=0;
+          //let h=100;
+          //let s=100;
+          //let b=100;
+          //p.stroke(0);
+          //p.strokeWeight(10);
+          
+          
+          
+   
+
+   
+       
         }
 
         // also create a draw function
         p.draw = function() {
+
           p.background(255);
-          //p.image(bg,101,101);
           p.fill(hue,saturation,brightness);
+          p.noStroke();
           p.ellipse(101,101,largeness,largeness);
+              
+         /* let px=p.mouseX;
+          let py=p.mouseY;
+
+    
+
+        let d=dist(px,py,101,101);
+
+        if(p.mouseIsPressed){
+        if(d<=51.5){
+        console.log("entered")
+
+        p.stroke(colorToUse);
+        p.strokeWeight(20);
+        //p.noStroke();
+        p.line(px,py, p.pmouseX, p.pmouseY);
+
+          
         }
-      }
+
+
+      }*/
+
+   
+
+
+        }
+
+
+
+    
+
+    }
       let myp5 = new p5(sketchCode1, document.getElementById('p5sketch'));
 
     </script>
