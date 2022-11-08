@@ -106,6 +106,27 @@ function draw() {
  if(state == 0){
 
     currentSystem.display();
+    // if(currentSystem.planets.length >1){
+    //   for(let i = 0; i<currentSystem.planets.length-1; i++){
+    //     for(let j = i+1; i<currentSystem.planets.length; i++){
+    //       currentSystem.planets[i].collision(currentSystem.planets[j])
+  
+    //     }
+  
+    //   }
+
+    // }
+     if(currentSystem.planets.length >1){
+      for(let i = 0; i<currentSystem.planets.length-1; i++){
+            for(let j = i+1; j<currentSystem.planets.length; j++){
+              if(currentSystem.planets[i].collision(currentSystem.planets[j])){
+                currentSystem.planets.splice(i,1)
+              }
+             
+            }
+        }
+     }
+  
     drawIndication();
 
   }else if(state==1){
@@ -300,6 +321,16 @@ class Planet{
     let moonDist = dist(this.x,this.y,mouseX,mouseY) + 20 + random(20);
 
     this.moons.push( new Moon(moonDist,largeness,this));
+
+  }
+
+  collision(planetTwo){
+
+    if(dist(this.x, this.y, planetTwo.x,planetTwo.y) < 70){
+      return true
+    }
+
+    return false
 
   }
 
