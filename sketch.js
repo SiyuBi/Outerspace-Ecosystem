@@ -300,6 +300,7 @@ class Asteroid{
     this.angle = angle;
     this.x = 0;
     this.y = 0;
+    this.appearance = 'ellipse';
     SolarSystem.asteroids.push(this);
   }
 
@@ -310,7 +311,17 @@ class Asteroid{
     this.y = cos(this.angle) * this.d + this.system.stars[0].y;
 
     fill(this.H,this.S,this.B);
-    ellipse(this.x,this.y,this.size,this.size*1.3);
+    if (this.appearance == 'ellipse'){
+      ellipse(this.x, this.y, this.size, this.size*1.5);
+    }
+    else{
+      image(this.appearance, this.x, this.y);
+      if (this.appearance == exp1 && exp1.getCurrentFrame() >= 18){
+        //remove this planet
+        var index = this.system.asteroids.indexOf(this);
+        this.system.asteroids.splice(index,1);
+      }
+    }
     this.angle += this.speed;
   }
 
@@ -403,6 +414,11 @@ function mousePressed() {
         for (let i = 0; i < currentSystem.planets.length;i++){
           if (currentSystem.planets[i].isMouseOver()){
             currentSystem.planets[i].appearance = exp1;
+          }
+        }
+        for (let i = 0; i < currentSystem.asteroids.length;i++){
+          if (currentSystem.asteroids[i].isMouseOver()){
+            currentSystem.asteroids[i].appearance = exp1;
           }
         }
         newElement = null;
