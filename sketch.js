@@ -123,8 +123,35 @@ function draw() {
 
     currentSystem.display();
 
-       if(currentSystem.planets.length >1){
+    if(currentSystem.planets.length ==1){
+      if(currentSystem.asteroids.length>0){
+        for(let j = 0; j<currentSystem.asteroids.length;j++){
+          if(currentSystem.planets[0].collision(currentSystem.asteroids[j])){ 
+          currentSystem.asteroids.splice(j,1)
+          
+            
+          }
+
+        }
+      }
+    }
+    
+
+    if(currentSystem.planets.length >1){
       for(let i = 0; i<currentSystem.planets.length-1; i++){
+        if(currentSystem.asteroids.length>0){
+          for(let j = 0; j<currentSystem.asteroids.length;j++){
+            if(currentSystem.planets[i].collision(currentSystem.asteroids[j])){
+              if(currentSystem.planets[i].size>currentSystem.asteroids[j].size){
+              currentSystem.asteroids.splice(j,1)
+            }
+              else{
+                currentSystem.planets.splice(i,1)
+              }
+
+            }
+          }
+        }
             for(let j = i+1; j<currentSystem.planets.length; j++){
               if(currentSystem.planets[i].collision(currentSystem.planets[j])){
                 if(currentSystem.planets[j].size>currentSystem.planets[i].size){
@@ -132,6 +159,23 @@ function draw() {
               }
                 else{
                   currentSystem.planets.splice(j,1)
+                }
+
+              }
+             
+            }
+        }
+     }
+
+     if(currentSystem.asteroids.length >1){
+      for(let i = 0; i<currentSystem.asteroids.length-1; i++){
+            for(let j = i+1; j<currentSystem.asteroids.length; j++){
+              if(currentSystem.asteroids[i].collision(currentSystem.asteroids[j])){
+                if(currentSystem.asteroids[j].size>currentSystem.asteroids[i].size){
+                currentSystem.asteroids.splice(i,1)
+              }
+                else{
+                  currentSystem.asteroids.splice(j,1)
                 }
 
               }
@@ -489,6 +533,16 @@ class Asteroid{
     return false;
 
   }
+
+    collision(AsteroidTwo){
+
+    if(dist(this.x, this.y, AsteroidTwo.x, AsteroidTwo.y) < 70){
+      return true
+    }
+
+    return false
+
+  }
 }
 
 
@@ -654,6 +708,8 @@ function start(){
  document.querySelector("#instructions").style.display = "none";
 
 }
+
+
 
 
 function originalAngle(){
