@@ -37,7 +37,7 @@ let currentSystem;
 let newAngle=0;
 let ast;
 let song;
-
+let hit;
 
 
 
@@ -53,6 +53,7 @@ function preload() {
 
 
   song = loadSound("sounds/song.mp3");
+  hit=loadSound("sounds/hit1.mp3");
 
 
   
@@ -123,16 +124,20 @@ function draw() {
 
     currentSystem.display();
 
-    if(currentSystem.planets.length ==1){
+    if(currentSystem.planets.length >0){
       if(currentSystem.asteroids.length>0){
+      for(let i = 0; i<currentSystem.planets.length;i++){
         for(let j = 0; j<currentSystem.asteroids.length;j++){
-          if(currentSystem.planets[0].collision(currentSystem.asteroids[j])){ 
-          currentSystem.asteroids.splice(j,1)
+          if(currentSystem.planets[i].collision(currentSystem.asteroids[j])){ 
+             currentSystem.asteroids.appearance=exp1;
+             hit.play();
+            currentSystem.asteroids.splice(j,1)
           
             
           }
 
         }
+      }
       }
     }
     
@@ -143,10 +148,16 @@ function draw() {
           for(let j = 0; j<currentSystem.asteroids.length;j++){
             if(currentSystem.planets[i].collision(currentSystem.asteroids[j])){
               if(currentSystem.planets[i].size>currentSystem.asteroids[j].size){
+              currentSystem.asteroids.appearance=exp1;
+              hit.play();
               currentSystem.asteroids.splice(j,1)
+               
             }
               else{
-                currentSystem.planets.splice(i,1)
+                  currentSystem.planets.appearance=exp1;
+                   hit.play();
+                  currentSystem.planets.splice(i,1)
+                
               }
 
             }
@@ -155,9 +166,13 @@ function draw() {
             for(let j = i+1; j<currentSystem.planets.length; j++){
               if(currentSystem.planets[i].collision(currentSystem.planets[j])){
                 if(currentSystem.planets[j].size>currentSystem.planets[i].size){
+                   currentSystem.planets.appearance=exp1;
+                    hit.play();
                 currentSystem.planets.splice(i,1)
               }
                 else{
+                   currentSystem.planets.appearance=exp1;
+                    hit.play();
                   currentSystem.planets.splice(j,1)
                 }
 
@@ -172,9 +187,11 @@ function draw() {
             for(let j = i+1; j<currentSystem.asteroids.length; j++){
               if(currentSystem.asteroids[i].collision(currentSystem.asteroids[j])){
                 if(currentSystem.asteroids[j].size>currentSystem.asteroids[i].size){
+                   hit.play();
                 currentSystem.asteroids.splice(i,1)
               }
                 else{
+                   hit.play();
                   currentSystem.asteroids.splice(j,1)
                 }
 
