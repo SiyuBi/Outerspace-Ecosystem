@@ -55,16 +55,13 @@ function preload() {
   song = loadSound("sounds/song.mp3");
   hit=loadSound("sounds/hit1.mp3");
 
-
-  
-
 }
 
 function setup() {
 
   song.loop();
 
- outputVolume(0.05);
+  outputVolume(0.05);
 
   yNoiseOffset = random(0,10)
   OneyNoiseOffset = random(10,20)
@@ -190,10 +187,12 @@ function draw() {
               if(currentSystem.asteroids[i].collision(currentSystem.asteroids[j])){
                 if(currentSystem.asteroids[j].size>currentSystem.asteroids[i].size){
                    hit.play();
+                currentSystem.planets[i].appearance=exp1;
                 currentSystem.asteroids.splice(i,1)
               }
                 else{
-                   hit.play();
+                  hit.play();
+                  currentSystem.asteroids[j].appearance=exp1;
                   currentSystem.asteroids.splice(j,1)
                 }
 
