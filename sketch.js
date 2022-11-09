@@ -64,6 +64,8 @@ function setup() {
 
   song.loop();
 
+ outputVolume(0.05);
+
   yNoiseOffset = random(0,10)
   OneyNoiseOffset = random(10,20)
   TwoyNoiseOffset = random(20,30)
@@ -129,7 +131,7 @@ function draw() {
       for(let i = 0; i<currentSystem.planets.length;i++){
         for(let j = 0; j<currentSystem.asteroids.length;j++){
           if(currentSystem.planets[i].collision(currentSystem.asteroids[j])){ 
-             currentSystem.asteroids.appearance=exp1;
+             currentSystem.asteroids[j].appearance=exp1;
              hit.play();
             currentSystem.asteroids.splice(j,1)
           
@@ -148,13 +150,13 @@ function draw() {
           for(let j = 0; j<currentSystem.asteroids.length;j++){
             if(currentSystem.planets[i].collision(currentSystem.asteroids[j])){
               if(currentSystem.planets[i].size>currentSystem.asteroids[j].size){
-              currentSystem.asteroids.appearance=exp1;
+              currentSystem.asteroids[j].appearance=exp1;
               hit.play();
               currentSystem.asteroids.splice(j,1)
                
             }
               else{
-                  currentSystem.planets.appearance=exp1;
+                  currentSystem.planets[i].appearance=exp1;
                    hit.play();
                   currentSystem.planets.splice(i,1)
                 
@@ -166,12 +168,12 @@ function draw() {
             for(let j = i+1; j<currentSystem.planets.length; j++){
               if(currentSystem.planets[i].collision(currentSystem.planets[j])){
                 if(currentSystem.planets[j].size>currentSystem.planets[i].size){
-                   currentSystem.planets.appearance=exp1;
+                   currentSystem.planets[i].appearance=exp1;
                     hit.play();
-                currentSystem.planets.splice(i,1)
+                    currentSystem.planets.splice(i,1)
               }
                 else{
-                   currentSystem.planets.appearance=exp1;
+                   currentSystem.planets[j].appearance=exp1;
                     hit.play();
                   currentSystem.planets.splice(j,1)
                 }
@@ -436,7 +438,7 @@ class Planet{
 
   collision(planetTwo){
 
-    if(dist(this.x, this.y, planetTwo.x,planetTwo.y) < 70){
+    if(dist(this.x, this.y, planetTwo.x,planetTwo.y) < (this.size/2 + planetTwo.size/2)){
       return true
     }
 
@@ -505,9 +507,10 @@ class Asteroid{
  
   moveAndDisplay(){
 
+   
 
-     this.x = cos(this.angle)*1.1 * this.d +  this.system.stars[0].x;
-    this.y = sin(this.angle) * this.d +  this.system.stars[0].y;
+     this.x = cos(this.angle) * this.d +  this.system.stars[0].x;
+    this.y = sin(this.angle) *1.1 * this.d +  this.system.stars[0].y;
 
 
     fill(this.H,this.S,this.B);
@@ -553,7 +556,7 @@ class Asteroid{
 
     collision(AsteroidTwo){
 
-    if(dist(this.x, this.y, AsteroidTwo.x, AsteroidTwo.y) < 70){
+    if(dist(this.x, this.y, AsteroidTwo.x, AsteroidTwo.y) < (this.size/2 + AsteroidTwo.size/2)){
       return true
     }
 
@@ -623,7 +626,7 @@ function mousePressed() {
     const newAngle = originalAngle();
 
 
-  if (newElement != null){
+  if (newElement != null && dist(mouseX,mouseY,currentSystem.stars[0].x,currentSystem.stars[0].y)>currentSystem.stars[0].size/2+largeness/2){
     switch(newElement) {
       case 'star':
         //can't create new stars for now
@@ -657,8 +660,9 @@ function mousePressed() {
         break;
       case 'asteroid':
         //create new asteroid
-         let di = dist(mouseX,mouseY,500,500);
+         let di = dist(mouseX,mouseY,currentSystem.stars[0].x,currentSystem.stars[0].y);
         console.log(new Asteroid(largeness, mouseX,mouseY,di, currentSystem,newAngle));
+        console.log(newAngle);
         newElement = null;
         break;
       case 'destroy':
@@ -666,16 +670,13 @@ function mousePressed() {
         //destory object if clicked on
         for (let i = 0; i < currentSystem.planets.length; i++){
           if (currentSystem.planets[i].isMouseOver()){
+                 hit.play();
                 currentSystem.planets[i].appearance = exp1;
                 //currentSystem.planets.splice(i,1);  
 
 
                
               }
-
-
-
-           //gif_im.position(mouseX, mouseY).hide();
           
         }
 
@@ -684,6 +685,7 @@ function mousePressed() {
 
         for(let i=0;i<currentSystem.asteroids.length;i++){
           if(currentSystem.asteroids[i].isMouseOver()){
+             hit.play();
             currentSystem.asteroids[i].appearance = exp1;
              //currentSystem.asteroids.splice(i,1);
               //gif_im.position(currentSystem.asteroids.x, currentSystem.asteroids.y).show();
